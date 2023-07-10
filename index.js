@@ -8,7 +8,6 @@ const data = require('./data');
 const MONGODB_URI = 'mongodb://127.0.0.1:27017/recipe-app';
 
 // Connection to the database "recipe-app"
-//let create1 = 
 mongoose
   .connect(MONGODB_URI)
   .then(x => {
@@ -32,28 +31,23 @@ mongoose
     .then(r=>console.log(r.title))
     .catch(error=>console.error('Error connecting to the database', error))
   )
-  .then(() => {
+  .then(() => 
     // Run your code here, after you have insured that the connection was made
     Recipe.insertMany(data)
     .then(rec=>rec.forEach(r=>console.log(r.title)))
     .catch(error=>console.log(`An error ${error} happened`))
-      })
-  .then(()=>{
-    Recipe.findOneAndUpdate({title:'Rigatoni alla Genovese'},{duration:100})
-    .then(console.log('Change Made'))
-    .catch(error=>console.log(`Error updating recipe${error}`))
-  })
-  //.then(()=>{
-  //  console.log(Recipe.findOne({title:'Rigatoni alla Genovese'}))
-  //})
-  .then(()=>{
-    Recipe.deleteOne({title:'Carrot Cake'})
-    .then('Recipe Removed')
+      )
+  .then(()=>
+      Recipe.findOneAndUpdate({title:'Rigatoni alla Genovese'},{duration:100},{new:true})
+       .then(res=>console.log('Change Made duration',res.duration))
+       .catch(error=>console.log(`Error updating recipe${error}`))
+     )
+  .then(()=>
+     Recipe.deleteOne({title:'Carrot Cake'})
+    .then(result=>console.log('Recipe Removed',result.acknowledged))
     .catch(error=>console.log(`Error deleting recipe ${error}`))
-  })
-  .catch(error => {
-    console.error('Error connecting to the database', error);
-  })
-
- // mongoose.connection.close();
-  // 
+  )  
+  .then(()=>mongoose.connection.close())
+  .catch(error => 
+    console.error('Error connecting to the database', error)
+  )
